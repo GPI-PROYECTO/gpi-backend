@@ -2,6 +2,15 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const fs = require('fs');
+const path = require('path');
+
+
+// Crear la carpeta de uploads automáticamente si no existe en el servidor de Render
+const dir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
 
 // --- IMPORTACIÓN DE RUTAS ---
 const embarquePlanaRoutes = require("./routes/embarquePlanaRoutes");
