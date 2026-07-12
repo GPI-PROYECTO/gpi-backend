@@ -27,6 +27,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+app.use('/api/auth', authRoutes);
 
 // --- MODELO PARA EMBARQUES CONSOLIDADOS ---
 const ViajeConsolidado = mongoose.model('ViajeConsolidado', new mongoose.Schema({
@@ -51,7 +52,8 @@ app.use("/api/embarque-plana", embarquePlanaRoutes);
 app.use("/api/embarque-caja", embarqueCajaRoutes);
 app.use("/api/recepcion-lp", recepcionLPRoutes);
 app.use("/api/consulta", consultaRoutes);
-app.use('/api/auth', authRoutes);
+
+
 // --- RUTAS PARA EL MÓDULO DE EMBARQUES CONSOLIDADOS ---
 app.post("/api/embarques/nuevo", async (req, res) => {
   try {
