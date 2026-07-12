@@ -4,6 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const fs = require('fs');
 const path = require('path');
+const authRoutes = require('./routes/authRoutes');
 
 
 // Crear la carpeta de uploads automáticamente si no existe en el servidor de Render
@@ -50,7 +51,7 @@ app.use("/api/embarque-plana", embarquePlanaRoutes);
 app.use("/api/embarque-caja", embarqueCajaRoutes);
 app.use("/api/recepcion-lp", recepcionLPRoutes);
 app.use("/api/consulta", consultaRoutes);
-
+app.use('/api/auth', authRoutes);
 // --- RUTAS PARA EL MÓDULO DE EMBARQUES CONSOLIDADOS ---
 app.post("/api/embarques/nuevo", async (req, res) => {
   try {
