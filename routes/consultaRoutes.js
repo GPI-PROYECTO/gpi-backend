@@ -6,17 +6,15 @@ const EmbarquePlana = require("../models/EmbarquePlana");
 const EmbarqueCaja = require("../models/EmbarqueCaja");
 const RecepcionLP = require("../models/RecepcionLP");
 const FotoMaster = require("../models/FotoMaster");
-
-// 👇 NOTA: Si tu archivo está en minúscula, cambia "Spool" por "spool"
 const Spool = require("../models/SpoolMaster");
 
-// 2. Agregamos "/:coleccion" para que la ruta sea dinámica
+// 2. RUTA GET: Obtener historial (ruta dinámica)
 router.get("/historial/:coleccion", async (req, res) => {
   try {
     const { coleccion } = req.params;
     let datos;
     
-    // 3. Switch para buscar en la base de datos correcta según lo que pida React
+    // Switch para buscar en la base de datos correcta según lo que pida React
     switch(coleccion) {
       case 'plana': 
         datos = await EmbarquePlana.find().sort({ createdAt: -1 }); 
@@ -31,9 +29,6 @@ router.get("/historial/:coleccion", async (req, res) => {
         datos = await FotoMaster.find().sort({ createdAt: -1 }); 
         break;
       case 'master':
-        datos = await Spool.find().sort({ codigoCorto: 1 }); // Ordenado alfabéticamente
-        break;
-        case 'master':
         // Ordenamos por 'cc' (Código Corto)
         datos = await Spool.find().sort({ cc: 1 }); 
         break;
@@ -46,6 +41,25 @@ router.get("/historial/:coleccion", async (req, res) => {
   } catch (error) {
     console.error("Error al obtener historial:", error);
     res.status(500).json({ mensaje: "Error al obtener historial", error: error.message });
+  }
+});
+
+// 3. RUTA DELETE: Eliminar un registro específico de FotoMaster
+router.delete('/historial/fotomaster/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Busca el ID en la colección FotoMaster y lo elimina
+    const resultado = await FotoMaster.findByIdAndDelete(id);
+
+    if (!resultado) {
+      return res.status(404).json({ error: "Registro no encontrado" });
+    }
+
+    res.json({ mensaje: "Registro eliminado correctamente" });
+  } catch (error) {
+    console.error("Error al eliminar el registro:", error);
+    res.status(500).json({ error: "Error interno del servidor al borrar" });
   }
 });
 
