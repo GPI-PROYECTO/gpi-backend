@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 
-
 // Crear la carpeta de uploads automáticamente si no existe en el servidor de Render
 const dir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(dir)) {
@@ -29,15 +28,17 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use('/api/auth', authRoutes);
 
-// --- MODELO PARA EMBARQUES CONSOLIDADOS ---
+// --- MODELO PARA EMBARQUES CONSOLIDADOS (ACTUALIZADO) ---
 const ViajeConsolidado = mongoose.model('ViajeConsolidado', new mongoose.Schema({
   numeroEmbarque: String,
   empresaDestino: String,
+  nombreProyecto: String,     // Agregado
   nombreChofer: String,
-  placaAutobus: String,
-  placaPlana: String,
+  placasPlana: String,        // Actualizado
+  placasAutobus: String,      // Actualizado
   pesoTotal: Number,
-  fechaSalida: String,
+  fechaLlegadaPlana: String,  // Agregado
+  fechaSalidaPlana: String,   // Agregado
   encargadoEmbarque: String,
   spoolsCaja: [String],
   spoolsPlana: [String],
@@ -66,7 +67,8 @@ app.post("/api/embarques/nuevo", async (req, res) => {
   }
 });
 
-app.get("/api/consulta/historial/embarques-consolidados", async (req, res) => {
+// RUTA CORREGIDA: Ya no chocará con el historial de consultaRoutes
+app.get("/api/embarques/historial", async (req, res) => {
   try {
     const historial = await ViajeConsolidado.find().sort({ createdAt: -1 });
     res.json(historial);
